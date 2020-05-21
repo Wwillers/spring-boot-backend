@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rhinodevs.crudbackend.domain.Cliente;
 import com.rhinodevs.crudbackend.dto.ClienteDTO;
+import com.rhinodevs.crudbackend.dto.ClienteNewDTO;
 import com.rhinodevs.crudbackend.services.ClienteService;
 
 @RestController
@@ -34,6 +35,15 @@ public class ClienteResource {
 		Cliente obj = service.search(id);
 		return ResponseEntity.ok().body(obj);
 
+	}
+	
+	@RequestMapping(method=RequestMethod.POST)
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDto) {
+		Cliente obj = service.fromDTO(objDto);
+		obj = service.insert(obj);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+				.path("/{id}").buildAndExpand(obj.getId()).toUri();
+		return ResponseEntity.created(uri).build();
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
