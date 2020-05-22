@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.rhinodevs.crudbackend.domain.Categoria;
 import com.rhinodevs.crudbackend.domain.Pedido;
-import com.rhinodevs.crudbackend.dto.CategoriaDTO;
 import com.rhinodevs.crudbackend.services.PedidoService;
 
 @RestController
