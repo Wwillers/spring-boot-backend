@@ -14,7 +14,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>crudbackend</name>
 	<packaging>jar</packaging>
-	<description>Demo project for Spring Boot</description>
+	<description>Commerce Project</description>
 
 	<properties>
 		<java.version>11</java.version>
