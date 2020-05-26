@@ -15,11 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.rhinodevs.crudbackend.domain.Cidade;
 import com.rhinodevs.crudbackend.domain.Cliente;
 import com.rhinodevs.crudbackend.domain.Endereco;
+import com.rhinodevs.crudbackend.domain.enums.Perfil;
 import com.rhinodevs.crudbackend.domain.enums.TipoCliente;
 import com.rhinodevs.crudbackend.dto.ClienteDTO;
 import com.rhinodevs.crudbackend.dto.ClienteNewDTO;
 import com.rhinodevs.crudbackend.repositories.ClienteRepository;
 import com.rhinodevs.crudbackend.repositories.EnderecoRepository;
+import com.rhinodevs.crudbackend.security.UserSS;
+import com.rhinodevs.crudbackend.services.exceptions.AuthorizationException;
 import com.rhinodevs.crudbackend.services.exceptions.DataIntegrityException;
 import com.rhinodevs.crudbackend.services.exceptions.ObjectNotFoundException;
 
@@ -36,6 +39,12 @@ public class ClienteService {
 	private BCryptPasswordEncoder pe;
 	
 	public Cliente search(Integer id) {
+		
+		UserSS user = UserService.authenticated();
+		if (user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
 		Optional<Cliente> obj = repo.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
 				 "Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName())); 
