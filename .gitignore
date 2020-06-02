@@ -8,6 +8,8 @@ target/
 src/main/resources/application.properties
 .properties
 *.properties
+.log
+*.log
 
 
 ### STS ###
