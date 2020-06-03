@@ -4,6 +4,9 @@ import java.net.URI;
 
 import javax.validation.Valid;
 
+import com.rhinodevs.crudbackend.domain.Pedido;
+import com.rhinodevs.crudbackend.services.PedidoService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.rhinodevs.crudbackend.domain.Pedido;
-import com.rhinodevs.crudbackend.services.PedidoService;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping(value = "/pedidos")
@@ -25,14 +27,14 @@ public class PedidoResource {
 	@Autowired
 	private PedidoService service;
 
+	@ApiOperation(value="Busca pedido por ID")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Pedido> find(@PathVariable Integer id) {
-
 		Pedido obj = service.search(id);
 		return ResponseEntity.ok().body(obj);
-
 	}
 	
+	@ApiOperation(value="Insere pedido")
 	@RequestMapping(method=RequestMethod.POST)
 	public ResponseEntity<Void> insert(@Valid @RequestBody Pedido obj) {
 		obj = service.insert(obj);
@@ -41,6 +43,7 @@ public class PedidoResource {
 		return ResponseEntity.created(uri).build();
 	}
 	
+	@ApiOperation(value="Retorna pedidos com paginação")
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<Page<Pedido>> findPage(
 			@RequestParam(value="page", defaultValue = "0") Integer page, 

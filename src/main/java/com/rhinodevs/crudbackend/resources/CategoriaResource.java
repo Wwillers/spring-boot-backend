@@ -23,6 +23,8 @@ import com.rhinodevs.crudbackend.dto.CategoriaDTO;
 import com.rhinodevs.crudbackend.services.CategoriaService;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping(value = "/categorias")
@@ -62,6 +64,9 @@ public class CategoriaResource {
 	
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	@ApiOperation(value="Remove categoria")
+	@ApiResponses(value = {
+			@ApiResponse(code = 400, message = "Não é possível excluir uma categoria que possui produtos"),
+			@ApiResponse(code = 404, message = "Código inexistente") })
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Void> delete(@PathVariable Integer id) {
 		service.delete(id);

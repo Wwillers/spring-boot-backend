@@ -6,6 +6,11 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import com.rhinodevs.crudbackend.domain.Cliente;
+import com.rhinodevs.crudbackend.dto.ClienteDTO;
+import com.rhinodevs.crudbackend.dto.ClienteNewDTO;
+import com.rhinodevs.crudbackend.services.ClienteService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.rhinodevs.crudbackend.domain.Cliente;
-import com.rhinodevs.crudbackend.dto.ClienteDTO;
-import com.rhinodevs.crudbackend.dto.ClienteNewDTO;
-import com.rhinodevs.crudbackend.services.ClienteService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping(value = "/clientes")
@@ -31,18 +35,21 @@ public class ClienteResource {
 	@Autowired
 	private ClienteService service;
 
+	@ApiOperation(value="Busca por id")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Cliente> find(@PathVariable Integer id) {
 		Cliente obj = service.search(id);
 		return ResponseEntity.ok().body(obj);
 	}
 	
+	@ApiOperation(value="Busca por email")
 	@RequestMapping(value = "/email", method = RequestMethod.GET)
 	public ResponseEntity<Cliente> find(@RequestParam(value="value") String email) {
 		Cliente obj = service.findByEmail(email);
 		return ResponseEntity.ok().body(obj);
 	}
 	
+	@ApiOperation(value="Insere cliente")
 	@RequestMapping(method=RequestMethod.POST)
 	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDto) {
 		Cliente obj = service.fromDTO(objDto);
@@ -52,6 +59,7 @@ public class ClienteResource {
 		return ResponseEntity.created(uri).build();
 	}
 	
+	@ApiOperation(value="Atualiza cliente")
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
 	public ResponseEntity<Void> update(@Valid @RequestBody ClienteDTO objDto, @PathVariable Integer id) {
 		Cliente obj = service.fromDTO(objDto);
@@ -60,7 +68,11 @@ public class ClienteResource {
 		return ResponseEntity.noContent().build();
 	}
 	
+	
 	@PreAuthorize("hasAnyRole('ADMIN')")
+	@ApiOperation(value="Deleta cliente")
+	@ApiResponses(value = {
+		@ApiResponse(code = 403, message = "Você precisa de perfil Administrador para deletar um cliente") })
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Void> delete(@PathVariable Integer id) {
 		service.delete(id);
@@ -68,6 +80,9 @@ public class ClienteResource {
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN')")
+	@ApiOperation(value="Retorna todos clientes")
+	@ApiResponses(value = {
+		@ApiResponse(code = 403, message = "Você precisa de perfil Administrador para visualizar todos clientes") })
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<ClienteDTO>> findAll() {
 		List<Cliente> list = service.searchAll();
@@ -75,6 +90,7 @@ public class ClienteResource {
 		return ResponseEntity.ok().body(listDto);
 	}
 	
+	@ApiOperation(value="Retorna todos clientes com paginação")
 	@RequestMapping(value="/page", method = RequestMethod.GET)
 	public ResponseEntity<Page<ClienteDTO>> findPage(
 			@RequestParam(value="page", defaultValue = "0") Integer page, 
@@ -86,6 +102,7 @@ public class ClienteResource {
 		return ResponseEntity.ok().body(listDto);
 	}
 	
+	@ApiOperation(value="Envia/Atualiza foto de profile")
 	@RequestMapping(value="/picture", method=RequestMethod.POST)
 	public ResponseEntity<Void> uploadProfilePicture(@RequestParam(name="file") MultipartFile file) {
 		URI uri = service.uploadProfilePicture(file);

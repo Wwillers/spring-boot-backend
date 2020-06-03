@@ -2,6 +2,11 @@ package com.rhinodevs.crudbackend.resources;
 
 import java.util.List;
 
+import com.rhinodevs.crudbackend.domain.Produto;
+import com.rhinodevs.crudbackend.dto.ProdutoDTO;
+import com.rhinodevs.crudbackend.resources.utils.URL;
+import com.rhinodevs.crudbackend.services.ProdutoService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rhinodevs.crudbackend.domain.Produto;
-import com.rhinodevs.crudbackend.dto.ProdutoDTO;
-import com.rhinodevs.crudbackend.resources.utils.URL;
-import com.rhinodevs.crudbackend.services.ProdutoService;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping(value = "/produtos")
@@ -23,13 +25,14 @@ public class ProdutoResource {
 	@Autowired
 	private ProdutoService service;
 
+	@ApiOperation(value="Retorna produto")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Produto> find(@PathVariable Integer id) {
-		//Alterado search para find - Refatorar
 		Produto obj = service.find(id);
 		return ResponseEntity.ok().body(obj);
 	}
 	
+	@ApiOperation(value="Retorna produtos com paginação")
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<Page<ProdutoDTO>> findPage(
 			@RequestParam(value="nome", defaultValue = "") String nome,
